@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<Pane prefHeight="233.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.hotelgui.controller.LoginController">
+
+   <children>
+      <GridPane alignment="CENTER" hgap="10" layoutX="164.0" layoutY="73.0" vgap="10">
+         <padding>
+            <Insets bottom="20" left="20" right="20" top="20" />
+         </padding>
+
+         <!-- Usuario -->
+         <Label text="Usuario:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <TextField fx:id="txtUsuario" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+         <!-- Contraseña -->
+         <Label text="Contraseña:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <PasswordField fx:id="txtPassword" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+      </GridPane>
+
+      <!-- Título -->
+      <Label layoutX="224.0" layoutY="21.0" text="INICIO DE SESIÓN">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+
+      <!-- Botón y ProgressIndicator en la misma posición -->
+      <Button fx:id="btnIniciar" layoutX="258.0" layoutY="192.0" onAction="#iniciarSesion" text="Iniciar sesión" />
+      <ProgressIndicator fx:id="progress" layoutX="268.0" layoutY="194.0" prefHeight="20" prefWidth="20" visible="false" />
+
+      <!-- Mensaje de bienvenida -->
+      <Label layoutX="32.0" layoutY="54.0" text="¡Bienvenido al sistema administrativo del Hotel! Para continuar digite su usuario y contraseña.">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
