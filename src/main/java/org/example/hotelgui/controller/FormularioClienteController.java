@@ -1,15 +1,19 @@
 package org.example.hotelgui.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.example.hotelgui.logica.ClienteLogica;
 import org.example.hotelgui.model.Cliente;
+import org.example.hotelgui.controller.Async;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class FormularioClienteController {
+
+    //vamos a usar la variable final de la logica
+    private final ClienteLogica clienteLogica = new ClienteLogica();
 
     // Controllers del formulario
     @FXML private TextField txtIdentificacionCliente;
@@ -19,6 +23,74 @@ public class FormularioClienteController {
 
     private Cliente cliente;
     private boolean modoEdicion = false;
+
+
+    @FXML
+    private TableView<Cliente> tablaClientes;
+    @FXML
+    private ProgressIndicator progress;
+
+    public void cargarClientesAsync(){
+        progress.setVisible(true); //va a durar lo q dure el hilo
+        Async.run(() -> { //esta expresion representa el proceso principal
+                try{
+                    //sobre el proceso principal vamos a ejecutar un hilo con un proceso principal
+                    return clienteLogica.findAll();
+                }
+                catch (SQLException ex){
+                    throw new RuntimeException(ex);
+                }
+        },
+        lista -> { //este es el caso del onSuccess
+            tablaClientes.getItems().setAll(lista);
+            progress.setVisible(false);
+        },
+        ex -> { //este es el caso del onError
+            progress.setVisible(false);
+            Alert a = new  Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error al cargar la lista de clientes");
+            a.setHeaderText(null);
+            a.setContentText(ex.getMessage());
+            a.showAndWait();
+        }
+        );
+    }
+
+    public void guardarClientesAsync(Cliente c){
+        //btnGuardar.setDisable(true); se quita el boton para que no se manden varias al mismo tiempo
+        progress.setVisible(true);
+
+        Async.run(
+                () -> { //este es el proceso principal
+                    try{
+                        clienteLogica.create(c);
+                        return c;
+                    }
+                    catch (SQLException ex){
+                        throw new RuntimeException(ex);
+                    }
+                },
+                guardado -> { //este es el onSuccess
+                    progress.setVisible(false);
+                    //btnGuardar.setDisable(false);
+                    tablaClientes.getItems().add(guardado);
+                    new Alert(Alert.AlertType.INFORMATION, "Cliente Guardado").showAndWait(); //para mostrar que se agrego el cliente
+                },
+                ex -> { //este es el onError
+                    progress.setVisible(false);
+                    //btnGuardar.setDisable(false);
+                    Alert a = new  Alert(Alert.AlertType.ERROR);
+                    a.setTitle("No se pudo guardar el cliente");
+                    a.setHeaderText(null);
+                    a.setContentText(ex.getMessage());
+                    a.showAndWait();
+                }
+        );
+    }
+
+
+
+
 
     public void setCliente(Cliente cliente, boolean editar) {
         //Si el cliente es nuevo, es decir, si venimos de un "Agregar Cliente"
