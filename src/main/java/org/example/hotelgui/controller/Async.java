@@ -39,6 +39,31 @@ public final class Async {
         });
 
     }
+
+    //esta es una version del metodo run donde no hay un resultado
+    //la accion se ejecuto pero no se necesita una respuesta
+    //es un procedimiento que no necesito q finalice para continuar con lo que estaba haciendo
+    public static void runVoid(Runnable action, Runnable onSuccess, Consumer<Throwable> onError) {
+        EXECUTOR.submit(() -> {
+            try {
+                action.run();
+                if  (onSuccess != null){
+                    Platform.runLater(onSuccess);
+                }
+            }
+            catch (Throwable ex) {
+                if  (onError != null){
+                    Platform.runLater(() -> onError.accept(ex));
+                }
+            }
+        });
+    }
+
+
+    public static void shutdown() {
+        EXECUTOR.shutdown(); //se necesitan apagar los hilos para mejor el rendimiento
+    }
+
 }
 
 
